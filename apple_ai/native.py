@@ -12,6 +12,7 @@ from .rules import all_combos
 
 NC, NF = 41, 7
 NP = NC + NF
+NV = 78
 FEATURES = ["empty", "edge", "span", "kill", "orphan", "own_alt", "t_kill"]
 COMBOS = all_combos()
 NAMES = [combo_str(c) for c in COMBOS]
@@ -40,9 +41,9 @@ def vec_from_weights(weights: dict) -> np.ndarray:
 _dll = ct.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "native", "engine.dll"))
 _pp = ct.POINTER(CPolicy)
 _dll.params.restype = ct.c_int
-for f in ("nrpa", "enum_moves"):
+for f in ("beam", "rbeam", "nrpa", "enum_moves"):
     getattr(_dll, f).restype = ct.c_int
-assert _dll.params() == NP
+assert _dll.params() == NP * 1000 + NV
 _dll.init(np.array(COMBOS, np.int32).ctypes.data_as(ct.c_void_p))
 THREADS = max(1, (os.cpu_count() or 2) - 1)
 
@@ -76,14 +77,46 @@ def pg(X, R, C, pol, k, seed, threads=THREADS):
     return g, h
 
 
-def nrpa(b, pol, seconds, seed=0, level=2, n=(100, 400, 100), alpha=1.0, threads=THREADS,
-         cancel=None, progress=None):
-    """반환: (점수, 경로, 진행 횟수). cancel 을 1로 바꾸면 멈추고, progress 에 최고 점수가 들어간다."""
+def value_features(X, R, C, threads=THREADS):
+    o = np.zeros((len(X), NV))
+    _dll.value_features(_a(X), len(X), R, C, threads, _a(o))
+    return o
+
+
+def sample_states(X, R, C, pol, seed, threads=THREADS):
+    o = np.zeros_like(X)
+    _dll.sample_states(_a(X), len(X), R, C, ct.byref(pol), ct.c_uint64(seed), threads, _a(o))
+    return o
+
+
+def _search(fn, b, args_mid, cancel, progress, tail=()):
     c = np.frombuffer(b.cells, np.uint8).copy()
-    path, k, st = np.zeros(400, np.int32), ct.c_int(0), np.zeros(4)
+    path, n, st = np.zeros(400, np.int32), ct.c_int(0), np.zeros(4)
     cancel = cancel if cancel is not None else ct.c_int(0)
     progress = progress if progress is not None else ct.c_int(0)
-    s = _dll.nrpa(_a(c), b.rows, b.cols, ct.byref(pol), ct.c_double(seconds), threads, level, *n,
-                  ct.c_double(alpha), ct.c_uint64(seed), ct.byref(cancel), ct.byref(progress),
-                  _a(path), ct.byref(k), _a(st))
-    return s, [tuple(int(v) for v in path[4 * i:4 * i + 4]) for i in range(k.value)], int(st[0])
+    s = fn(_a(c), b.rows, b.cols, *args_mid, ct.byref(cancel), ct.byref(progress), _a(path),
+           ct.byref(n), _a(st), *tail)
+    return s, [tuple(int(v) for v in path[4 * i:4 * i + 4]) for i in range(n.value)], st
+
+
+def nrpa(b, pol, seconds, seed=0, level=2, n=(100, 400, 100), alpha=1.0, threads=THREADS,
+         cancel=None, progress=None):
+    """NRPA. 반환: (점수, 경로, 통계). cancel 을 1로 바꾸면 멈추고, progress 에 최고 점수가 들어간다."""
+    return _search(_dll.nrpa, b, (ct.byref(pol), ct.c_double(seconds), threads, level, *n,
+                                  ct.c_double(alpha), ct.c_uint64(seed)), cancel, progress)
+
+
+def value_beam(b, vw, seconds, seed=0, cap=30000, noise=0.0, threads=THREADS, cancel=None, progress=None,
+         max_samples=0):
+    vw = np.ascontiguousarray(vw, dtype=float)
+    S = np.zeros((max(1, max_samples), len(b.cells)), np.uint8)
+    ns = ct.c_int(0)
+    r = _search(_dll.beam, b, (_a(vw), ct.c_double(seconds), threads, cap, ct.c_double(noise),
+                               ct.c_uint64(seed)), cancel, progress,
+                (_a(S) if max_samples else None, max_samples, ct.byref(ns)))
+    return (*r, S[:ns.value]) if max_samples else r
+
+
+def rollout_beam(b, pol, seconds, seed=0, width=16, children=8, pace=1.0, threads=THREADS, cancel=None, progress=None):
+    return _search(_dll.rbeam, b, (ct.byref(pol), ct.c_double(seconds), threads, width, children,
+                                   ct.c_double(pace), ct.c_uint64(seed)), cancel, progress)

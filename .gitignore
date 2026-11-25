@@ -7,4 +7,5 @@ dist/
 *.lib
 *.exp
 policy_new.json*
+value_new.json
 app_error.log

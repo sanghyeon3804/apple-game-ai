@@ -5,8 +5,9 @@ import time
 from apple_ai import native as nv
 from apple_ai.board import Board
 from apple_ai.board_gen import balanced_board
-from apple_ai.rules import enumerate_actions
+from apple_ai.rules import enumerate_actions, verify
 from apple_ai.solver import Cancelled, Solver
+from train_value import load
 
 
 def main():
@@ -37,6 +38,11 @@ def main():
     r = solver.solve(balanced_board(77), 5)     # solve 가 경로를 규칙대로 재생해 검증한다
     print(f"탐색 OK: {r.score}점, {len(r.path)}수, {r.elapsed:.1f}초")
     assert solver.solve(Board(bytes(170)), 1).score == 0
+    b = balanced_board(77)
+    for name, (s, p, _) in (("rollout beam", nv.rollout_beam(b, solver.policy, 3)),
+                            ("value beam", nv.value_beam(b, load("data/value.json"), 3))):
+        verify(b, p, s)
+        print(f"{name} OK: {s}점")
     solver.cancel.set()
     t = time.time()
     try:

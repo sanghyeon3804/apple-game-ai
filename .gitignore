@@ -1,0 +1,10 @@
+__pycache__/
+build/
+dist/
+*.spec
+*.dll
+*.obj
+*.lib
+*.exp
+policy_new.json*
+app_error.log

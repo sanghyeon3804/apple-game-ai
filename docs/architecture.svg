@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 975" width="1200" height="975" role="img" font-family="'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif"><title>사과게임 AI 구조: 오프라인 학습, 온라인 탐색, 인식과 실행</title><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b7890"/></marker><marker id="b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f5fbf"/></marker><marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a65a00"/></marker><marker id="d" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0b7a4b"/></marker></defs><rect width="1200" height="975" rx="16" fill="#ffffff"/><rect x="20" y="20" width="1160" height="350" rx="14" fill="#eef3fb"/>
+<text x="40" y="50" font-size="17" font-weight="700" fill="#172033" text-anchor="start">1. 오프라인 학습</text>
+<text x="1160" y="50" font-size="13" font-weight="400" fill="#526079" text-anchor="end">무작위 판에서 자가 플레이로 모델을 학습</text>
+<text x="310" y="88" font-size="15" font-weight="700" fill="#1f5fbf" text-anchor="middle">반사실 정책 경사</text>
+<rect x="50" y="105" width="235" height="85" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="167.5" y="132.5" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">자가 플레이</text>
+<text x="167.5" y="154.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">정책 π로 끝까지 진행</text>
+<text x="167.5" y="173.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">상태 s를 하나 추출</text>
+<rect x="335" y="105" width="235" height="85" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="452.5" y="132.5" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">반사실 롤아웃</text>
+<text x="452.5" y="154.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">가능한 모든 행동의 Q 추정</text>
+<text x="452.5" y="173.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">공통 난수로 분산 감소</text>
+<rect x="335" y="255" width="235" height="85" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="452.5" y="282.5" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">정책 갱신</text>
+<text x="452.5" y="304.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">피셔 대각 성분으로 스케일 보정</text>
+<text x="452.5" y="323.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">표준오차 미만 기울기 제외</text>
+<rect x="50" y="255" width="235" height="85" rx="9" fill="#1f5fbf" stroke="#1f5fbf" stroke-width="1.5"/>
+<text x="167.5" y="282.5" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">정책 π(a|s)</text>
+<text x="167.5" y="304.5" font-size="13" font-weight="400" fill="#dbe8ff" text-anchor="middle">조합 가중치 41 + 특징 7</text>
+<text x="167.5" y="323.5" font-size="13" font-weight="400" fill="#dbe8ff" text-anchor="middle">softmax, 파라미터 48개</text>
+<path d="M285 147 H331" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M452 190 V251" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M335 297 H289" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M167 255 V194" fill="none" stroke="#1f5fbf" stroke-width="2" marker-end="url(#b)" stroke-dasharray="6 5"/>
+<text x="178" y="227" font-size="13" font-weight="400" fill="#1f5fbf" text-anchor="start">16라운드 반복</text>
+<text x="890" y="88" font-size="15" font-weight="700" fill="#a65a00" text-anchor="middle">가치 함수 학습</text>
+<rect x="915" y="105" width="235" height="85" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="1032.5" y="132.5" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">상태 수집</text>
+<text x="1032.5" y="154.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">π의 진행 상태 4만 개</text>
+<text x="1032.5" y="173.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">+ 빔이 전개한 상태</text>
+<rect x="630" y="105" width="235" height="85" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="747.5" y="132.5" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">롤아웃 레이블</text>
+<text x="747.5" y="154.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">상태마다 32회 진행</text>
+<text x="747.5" y="173.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">최댓값을 회귀 목표로</text>
+<rect x="630" y="255" width="235" height="85" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="747.5" y="282.5" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">능형 회귀</text>
+<text x="747.5" y="304.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">판 특징 26 × (1, t, t²)</text>
+<text x="747.5" y="323.5" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">78차원 선형 모델</text>
+<rect x="915" y="255" width="235" height="85" rx="9" fill="#a65a00" stroke="#a65a00" stroke-width="1.5"/>
+<text x="1032.5" y="282.5" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">가치 함수 V(s)</text>
+<text x="1032.5" y="304.5" font-size="13" font-weight="400" fill="#ffe8cc" text-anchor="middle">앞으로 더 지울 수 있는</text>
+<text x="1032.5" y="323.5" font-size="13" font-weight="400" fill="#ffe8cc" text-anchor="middle">사과 수를 예측</text>
+<path d="M915 147 H869" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M747 190 V251" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M865 297 H911" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M1032 255 V194" fill="none" stroke="#a65a00" stroke-width="2" marker-end="url(#c)" stroke-dasharray="6 5"/>
+<text x="1022" y="219" font-size="13" font-weight="400" fill="#a65a00" text-anchor="end">빔이 만난 상태로</text>
+<text x="1022" y="237" font-size="13" font-weight="400" fill="#a65a00" text-anchor="end">재학습 3회</text>
+<rect x="20" y="420" width="1160" height="270" rx="14" fill="#eaf6f0"/>
+<text x="40" y="450" font-size="17" font-weight="700" fill="#172033" text-anchor="start">2. 온라인 탐색 (C++ · 멀티스레드)</text>
+<text x="325" y="450" font-size="13" font-weight="400" fill="#526079" text-anchor="start">한 판마다 제한 시간 안에 가장 좋은 순서를 찾음</text>
+<rect x="40" y="470" width="600" height="200" rx="12" fill="#ffffff" stroke="#0b7a4b" stroke-width="3"/>
+<text x="60" y="500" font-size="18" font-weight="700" fill="#0b7a4b" text-anchor="start">NRPA</text>
+<text x="118" y="500" font-size="14" font-weight="700" fill="#172033" text-anchor="start">최종 채택 · 60초 평균 150.3</text>
+<rect x="60" y="520" width="165" height="82" rx="9" fill="#f4fbf7" stroke="#9ccdb6" stroke-width="1.5"/>
+<text x="142.5" y="546.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">롤아웃</text>
+<text x="142.5" y="568.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">로짓 = log π + 적응값</text>
+<text x="142.5" y="587.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">softmax 추출</text>
+<rect x="257" y="520" width="165" height="82" rx="9" fill="#f4fbf7" stroke="#9ccdb6" stroke-width="1.5"/>
+<text x="339.5" y="546.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">최고 순서 보관</text>
+<text x="339.5" y="568.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">2단계 중첩</text>
+<text x="339.5" y="587.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">100 × 400회</text>
+<rect x="454" y="520" width="165" height="82" rx="9" fill="#f4fbf7" stroke="#9ccdb6" stroke-width="1.5"/>
+<text x="536.5" y="546.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">정책 적응</text>
+<text x="536.5" y="568.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">최고 순서의 확률을</text>
+<text x="536.5" y="587.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">판별로 증가</text>
+<path d="M225 561 H253" fill="none" stroke="#0b7a4b" stroke-width="2" marker-end="url(#d)"/>
+<path d="M422 561 H450" fill="none" stroke="#0b7a4b" stroke-width="2" marker-end="url(#d)"/>
+<path d="M536 602 V642 H142 V606" fill="none" stroke="#0b7a4b" stroke-width="2" marker-end="url(#d)" stroke-dasharray="6 5"/>
+<text x="339" y="635" font-size="13" font-weight="400" fill="#0b7a4b" text-anchor="middle">적응된 정책으로 반복</text>
+<rect x="665" y="470" width="235" height="200" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="782.5" y="535.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">롤아웃 빔 서치</text>
+<text x="782.5" y="557.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">폭 16 · 자식 8</text>
+<text x="782.5" y="576.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">롤아웃 평균으로 평가</text>
+<text x="782.5" y="595.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">상위 1/3에 예산 집중</text>
+<text x="782.5" y="614.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">60초 평균 141.4~145.5*</text>
+<rect x="925" y="470" width="235" height="200" rx="9" fill="#ffffff" stroke="#b8c2d3" stroke-width="1.5"/>
+<text x="1042.5" y="535.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">가치 함수 빔 서치</text>
+<text x="1042.5" y="557.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">지운 수별 층 · 층당 30,000</text>
+<text x="1042.5" y="576.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">V(s)로 평가</text>
+<text x="1042.5" y="595.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">lock-free 중복 제거</text>
+<text x="1042.5" y="614.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">60초 평균 147.2</text>
+<path d="M622 395 V466" fill="none" stroke="#1f5fbf" stroke-width="2" marker-end="url(#b)"/>
+<path d="M110 340 V395 H782 V466" fill="none" stroke="#1f5fbf" stroke-width="2" marker-end="url(#b)"/>
+<path d="M1042 340 V466" fill="none" stroke="#a65a00" stroke-width="2" marker-end="url(#c)"/>
+<text x="612" y="388" font-size="13" font-weight="400" fill="#1f5fbf" text-anchor="end">NRPA의 초기 정책 (고정 편향)</text>
+<text x="792" y="412" font-size="13" font-weight="400" fill="#1f5fbf" text-anchor="start">행동 추출 · 롤아웃</text>
+<text x="1032" y="388" font-size="13" font-weight="400" fill="#a65a00" text-anchor="end">노드 평가</text>
+<rect x="20" y="740" width="1160" height="190" rx="14" fill="#f3f1fa"/>
+<text x="40" y="770" font-size="17" font-weight="700" fill="#172033" text-anchor="start">3. 인식과 실행</text>
+<text x="1160" y="770" font-size="13" font-weight="400" fill="#526079" text-anchor="end">화면만 보고 마우스로 플레이</text>
+<rect x="50" y="790" width="160" height="82" rx="9" fill="#ffffff" stroke="#b9aede" stroke-width="1.5"/>
+<text x="130.0" y="826.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">화면 캡처</text>
+<text x="130.0" y="848.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">주 모니터 전체</text>
+<rect x="260" y="790" width="160" height="82" rx="9" fill="#ffffff" stroke="#b9aede" stroke-width="1.5"/>
+<text x="340.0" y="816.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">숫자 인식</text>
+<text x="340.0" y="838.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">격자 검출 + 템플릿</text>
+<text x="340.0" y="857.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">불확실하면 중단</text>
+<rect x="470" y="790" width="160" height="82" rx="9" fill="#ffffff" stroke="#b9aede" stroke-width="1.5"/>
+<text x="550.0" y="816.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">경로 검증</text>
+<text x="550.0" y="838.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">규칙대로 재생해</text>
+<text x="550.0" y="857.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">점수 확인</text>
+<rect x="690" y="790" width="160" height="82" rx="9" fill="#ffffff" stroke="#b9aede" stroke-width="1.5"/>
+<text x="770.0" y="826.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">드래그 실행</text>
+<text x="770.0" y="848.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">마우스 자동 조작</text>
+<rect x="920" y="790" width="160" height="82" rx="9" fill="#ffffff" stroke="#b9aede" stroke-width="1.5"/>
+<text x="1000.0" y="816.0" font-size="16" font-weight="700" fill="#172033" text-anchor="middle">결과 확인</text>
+<text x="1000.0" y="838.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">사과가 사라졌는지</text>
+<text x="1000.0" y="857.0" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">실패하면 재시도</text>
+<path d="M210 831 H256" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M630 831 H686" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M850 831 H916" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)"/>
+<path d="M340 790 V674" fill="none" stroke="#0b7a4b" stroke-width="2" marker-end="url(#d)"/>
+<path d="M550 670 V786" fill="none" stroke="#0b7a4b" stroke-width="2" marker-end="url(#d)"/>
+<text x="350" y="722" font-size="13" font-weight="400" fill="#0b7a4b" text-anchor="start">17×10 판</text>
+<text x="560" y="722" font-size="13" font-weight="400" fill="#0b7a4b" text-anchor="start">최선의 순서</text>
+<path d="M1000 872 V905 H340 V876" fill="none" stroke="#6b7890" stroke-width="2" marker-end="url(#a)" stroke-dasharray="6 5"/>
+<text x="670" y="898" font-size="13" font-weight="400" fill="#526079" text-anchor="middle">계속 실패하면 남은 판을 다시 읽어 재계산</text>
+<text x="1160" y="958" font-size="12.5" font-weight="400" fill="#526079" text-anchor="end">* 141.4는 조합 정책(특징 없음), 145.5는 모방 학습 정책을 쓴 값. 같은 새 판 10개의 시뮬레이션 평균(최대 170).</text></svg>
